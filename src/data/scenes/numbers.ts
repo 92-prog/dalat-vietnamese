@@ -1,0 +1,37 @@
+import { scene } from './build'
+
+export default scene(
+  {
+    id: 'numbers',
+    title: '숫자·돈·가격',
+    emoji: '💵',
+    intro: '베트남 돈(동, VND)은 단위가 커요. 가게에서는 "천"을 빼고 "50"이라고만 하거나 "50k(năm mươi ca)"라고 줄여 말해요. 1만 동 ≈ 550원 정도로 감을 잡으세요.',
+  },
+  [
+    [1, 'một, hai, ba, bốn, năm', '1, 2, 3, 4, 5'],
+    [2, 'sáu, bảy, tám, chín, mười', '6, 7, 8, 9, 10'],
+    [3, 'mười một, mười lăm', '11, 15', { note: '15부터 끝자리 5(năm)는 lăm으로 바뀌어요.' }],
+    [4, 'hai mươi, hai mươi mốt', '20, 21', { note: '21부터 끝자리 1(một)은 mốt으로 바뀌어요.' }],
+    [5, 'hai mươi tư', '24', { note: '끝자리 4는 bốn 대신 tư라고 많이 해요.' }],
+    [6, 'một trăm', '100'],
+    [7, 'một trăm lẻ năm', '105', { north: 'một trăm linh năm' }],
+    [8, 'một ngàn', '1,000', { north: 'một nghìn' }],
+    [9, 'mười ngàn', '10,000동', { north: 'mười nghìn' }],
+    [10, 'năm mươi ngàn', '50,000동', { north: 'năm mươi nghìn' }],
+    [11, 'một trăm ngàn', '100,000동', { north: 'một trăm nghìn' }],
+    [12, 'một trăm rưỡi', '150,000동', { note: 'rưỡi = 반. 금액에서는 "천"을 빼고 말해요.' }],
+    [13, 'hai trăm ngàn', '200,000동', { north: 'hai trăm nghìn' }],
+    [14, 'năm trăm ngàn', '500,000동', { north: 'năm trăm nghìn', note: '가장 큰 지폐예요. 20만 동(파랑)과 50만 동(하늘색)을 헷갈리지 마세요.' }],
+    [15, 'một triệu', '1,000,000동'],
+    [16, 'Bao nhiêu tiền?', '얼마예요?', { hanja: [['tiền', '전(錢)']] }],
+    [17, 'Cái này giá bao nhiêu?', '이거 가격이 얼마예요?', { hanja: [['giá', '가(價)']] }],
+    [18, 'Tổng cộng bao nhiêu?', '전부 얼마예요?', { hanja: [['tổng cộng', '총공(總共)']] }],
+    [19, 'Tôi không có tiền lẻ.', '잔돈이 없어요.'],
+    [20, 'Thối tiền cho tôi.', '거스름돈 주세요.', { north: 'Trả lại tiền thừa cho tôi.' }],
+    [21, 'Tôi trả bằng tiền mặt.', '현금으로 낼게요.'],
+    [22, 'Chuyển khoản được không?', '계좌이체 돼요?', { note: '베트남은 QR 계좌이체가 아주 흔해요. 현지 은행 계좌를 만들면 편해요.' }],
+    [23, 'Hôm nay ngày mấy?', '오늘 며칠이에요?'],
+    [24, 'Bây giờ là mấy giờ?', '지금 몇 시예요?'],
+    [25, 'Bảy giờ sáng.', '아침 7시.'],
+  ],
+)
