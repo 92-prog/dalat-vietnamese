@@ -6,7 +6,7 @@ interface Ctx {
   state: AppState
   update: (fn: (s: AppState) => AppState) => void
   replace: (s: AppState) => void
-  say: (text: string, rate?: number) => Promise<void>
+  say: (text: string, rate?: number) => Promise<boolean>
   saveFailed: boolean
 }
 
@@ -22,12 +22,32 @@ export function AppProvider({ children }: { children: ReactNode }) {
 
   const update = useCallback((fn: (s: AppState) => AppState) => setState((s) => fn(s)), [])
   const replace = useCallback((s: AppState) => setState(s), [])
+  const [toast, setToast] = useState<string | null>(null)
+  useEffect(() => {
+    if (!toast) return
+    const t = setTimeout(() => setToast(null), 3000)
+    return () => clearTimeout(t)
+  }, [toast])
+
   const say = useCallback(
-    (text: string, rate?: number) => speak(text, { rate: rate ?? state.settings.rate, voiceURI: state.settings.voiceURI }),
+    async (text: string, rate?: number) => {
+      const ok = await speak(text, { rate: rate ?? state.settings.rate, voiceURI: state.settings.voiceURI })
+      if (!ok) setToast('이 문장은 아직 베트남어 음성이 없어요.')
+      return ok
+    },
     [state.settings.rate, state.settings.voiceURI],
   )
 
-  return <AppCtx.Provider value={{ state, update, replace, say, saveFailed }}>{children}</AppCtx.Provider>
+  return (
+    <AppCtx.Provider value={{ state, update, replace, say, saveFailed }}>
+      {children}
+      {toast && (
+        <div className="toast" role="status">
+          {toast}
+        </div>
+      )}
+    </AppCtx.Provider>
+  )
 }
 
 export function useApp(): Ctx {

@@ -7,7 +7,8 @@
     "dev": "vite",
     "build": "tsc -p . && vite build",
     "preview": "vite preview",
-    "test": "vitest run"
+    "test": "vitest run",
+    "audio": "node scripts/gen-audio.mjs"
   },
   "dependencies": {
     "react": "^18.3.1",
@@ -15,6 +16,7 @@
     "ts-fsrs": "^5.4.2"
   },
   "devDependencies": {
+    "@types/node": "^22.20.5",
     "@types/react": "^18.3.31",
     "@types/react-dom": "^18.3.7",
     "@vitejs/plugin-react": "^6.1.2",

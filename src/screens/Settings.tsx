@@ -1,17 +1,14 @@
-import { useEffect, useRef, useState } from 'react'
+import { useRef, useState } from 'react'
 import { PHRASE_BY_ID } from '../data/scenes'
 import { defaultState, exportState, importState } from '../lib/storage'
-import { onVoicesChanged, speechSupported, vietnameseVoices } from '../lib/speech'
+import { VOICE_TEST_TEXT } from '../data/audioTexts'
 import { useApp } from '../state'
 
 export function Settings() {
   const { state, update, replace, say, saveFailed } = useApp()
-  const [voices, setVoices] = useState(vietnameseVoices)
   const [message, setMessage] = useState('')
   const file = useRef<HTMLInputElement>(null)
   const { settings } = state
-
-  useEffect(() => onVoicesChanged(() => setVoices(vietnameseVoices())), [])
 
   const set = (patch: Partial<typeof settings>) => update((s) => ({ ...s, settings: { ...s.settings, ...patch } }))
 
@@ -42,25 +39,7 @@ export function Settings() {
 
       <div className="card form">
         <h3>음성</h3>
-        {!speechSupported() ? (
-          <p className="warn-text">이 브라우저는 음성 읽기를 지원하지 않아요.</p>
-        ) : voices.length === 0 ? (
-          <p className="warn-text">
-            베트남어 음성이 없어요. 아이폰: 설정 → 손쉬운 사용 → 읽기 및 말하기 → 음성 → 베트남어에서 음성을 내려받은 뒤 앱을 다시 열어 주세요.
-          </p>
-        ) : (
-          <label>
-            목소리
-            <select value={settings.voiceURI ?? ''} onChange={(e) => set({ voiceURI: e.target.value || null })}>
-              <option value="">기본</option>
-              {voices.map((v) => (
-                <option key={v.voiceURI} value={v.voiceURI}>
-                  {v.name}
-                </option>
-              ))}
-            </select>
-          </label>
-        )}
+        <p className="muted">앱에 들어 있는 베트남어 녹음(Linh, 북부 표준 발음)으로 들려줘요. 인터넷이 없어도 재생돼요.</p>
         <label>
           재생 속도
           <select value={settings.rate} onChange={(e) => set({ rate: Number(e.target.value) })}>
@@ -71,7 +50,7 @@ export function Settings() {
             ))}
           </select>
         </label>
-        <button className="btn" onClick={() => say('Xin chào, tôi là người Hàn Quốc.')}>
+        <button className="btn" onClick={() => say(VOICE_TEST_TEXT)}>
           ▶ 음성 시험
         </button>
       </div>
