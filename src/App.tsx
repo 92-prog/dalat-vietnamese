@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import { dueIds } from './lib/srs'
+import { Chat } from './screens/Chat'
 import { Review } from './screens/Review'
 import { SceneDetail, Scenes } from './screens/Scenes'
 import { Settings } from './screens/Settings'
@@ -12,6 +13,7 @@ const TABS = [
   { path: 'tones', label: '성조', icon: '🎵' },
   { path: 'scenes', label: '장면', icon: '🗺️' },
   { path: 'review', label: '복습', icon: '🔁' },
+  { path: 'chat', label: '채팅', icon: '💬' },
   { path: 'settings', label: '설정', icon: '⚙️' },
 ]
 
@@ -45,6 +47,8 @@ export function App() {
           <Scenes />
         ) : page === 'review' ? (
           <Review />
+        ) : page === 'chat' ? (
+          <Chat />
         ) : page === 'settings' ? (
           <Settings />
         ) : (

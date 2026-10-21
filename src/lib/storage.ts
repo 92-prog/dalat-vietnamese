@@ -8,6 +8,8 @@ export interface Settings {
   voiceURI: string | null
   rate: number
   dailyNew: number
+  /** 근처 채팅에서 상대에게 보이는 이름 */
+  chatName: string
 }
 
 export interface AppState {
@@ -26,7 +28,7 @@ export function defaultState(now: Date = new Date()): AppState {
   return {
     version: 1,
     startDate: dayKey(now),
-    settings: { voiceURI: null, rate: 0.8, dailyNew: 10 },
+    settings: { voiceURI: null, rate: 0.8, dailyNew: 10, chatName: '' },
     cards: {},
     newLog: {},
     reviewLog: {},

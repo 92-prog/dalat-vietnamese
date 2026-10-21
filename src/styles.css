@@ -555,6 +555,8 @@ button {
 .form select,
 .form input {
   font: inherit;
+  /* 16px보다 작으면 아이폰이 입력할 때 화면을 확대한다 */
+  font-size: 16px;
   padding: 9px 10px;
   border-radius: 10px;
   border: 1px solid var(--line);
@@ -577,7 +579,7 @@ button {
   right: 0;
   bottom: 0;
   display: grid;
-  grid-template-columns: repeat(5, 1fr);
+  grid-template-columns: repeat(6, 1fr);
   background: color-mix(in srgb, var(--surface) 92%, transparent);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
@@ -615,6 +617,154 @@ button {
   padding: 0 5px;
   min-width: 16px;
   text-align: center;
+}
+
+/* 근처 채팅 */
+.peer {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  padding: 8px 0;
+  border-top: 1px solid var(--line);
+}
+.peer b {
+  flex: 1;
+}
+.peer .row {
+  margin: 0;
+}
+.messages {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin: 0 0 12px;
+}
+.messages .sys {
+  text-align: center;
+  margin: 0;
+  font-size: 0.82rem;
+}
+.bubble {
+  position: relative;
+  max-width: 85%;
+  padding: 8px 52px 8px 12px;
+  border-radius: 16px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  align-self: flex-start;
+}
+.bubble.me {
+  align-self: flex-end;
+  background: var(--accent-soft);
+  border-color: var(--accent-soft);
+}
+.bubble small {
+  color: var(--muted);
+  font-size: 0.75rem;
+}
+.bubble .vi {
+  margin: 0;
+  font-size: 1.1rem;
+  font-weight: 600;
+}
+.bubble .ko {
+  margin: 2px 0 0;
+  font-size: 0.86rem;
+  color: var(--muted);
+}
+.bubble .btn.icon {
+  position: absolute;
+  right: 6px;
+  top: 50%;
+  transform: translateY(-50%);
+  min-height: 36px;
+  min-width: 36px;
+  padding: 4px;
+}
+.form textarea {
+  font: inherit;
+  font-size: 1.1rem;
+  padding: 9px 10px;
+  border-radius: 10px;
+  border: 1px solid var(--line);
+  background: var(--surface-2);
+  color: var(--text);
+  resize: vertical;
+}
+.composer .mic {
+  min-height: 52px;
+  font-size: 1rem;
+}
+.heard {
+  margin: 10px 0 0;
+  font-size: 1.05rem;
+}
+.syls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin: 10px 0 4px;
+}
+.syl {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 2px 8px;
+  border-radius: 8px;
+  font-size: 1.15rem;
+  font-weight: 600;
+  background: var(--right-soft);
+  color: var(--right);
+}
+.syl small {
+  font-size: 0.7rem;
+  font-weight: 500;
+}
+.syl.tone {
+  background: color-mix(in srgb, var(--sun) 25%, transparent);
+  color: color-mix(in srgb, var(--sun) 55%, var(--text));
+}
+.syl.wrong,
+.syl.missing {
+  background: var(--wrong-soft);
+  color: var(--wrong);
+}
+.picker {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+.picker ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  max-height: 320px;
+  overflow-y: auto;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+}
+.picker li button {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  text-align: left;
+  border: 0;
+  border-top: 1px solid var(--line);
+  background: transparent;
+  padding: 8px 10px;
+  cursor: pointer;
+}
+.picker li:first-child button {
+  border-top: 0;
+}
+.picker li span {
+  color: var(--muted);
+  font-size: 0.86rem;
+}
+.picker li.muted {
+  padding: 8px 10px;
 }
 
 @media (max-width: 360px) {
