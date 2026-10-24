@@ -28,7 +28,7 @@ export interface ChatState {
 let state: ChatState = { running: false, peers: [], messages: [] }
 const subscribers = new Set<() => void>()
 let nextMessageId = 1
-let listening = false
+let listening: Promise<unknown> | null = null
 
 function set(next: Partial<ChatState>) {
   state = { ...state, ...next }
@@ -46,36 +46,40 @@ function addMessage(m: Omit<ChatMessage, 'id'>) {
 
 const peerOf = (id: string) => state.peers.find((p) => p.id === id)
 
+// 네이티브 이벤트 구독을 한 번만 하고, 구독이 끝날 때까지 기다릴 수 있게 Promise로 둔다.
 function listen() {
-  if (listening) return
-  listening = true
-  NearbyChat.addListener('peerFound', ({ peerId, name }) => {
-    if (!peerOf(peerId)) upsertPeer(peerId, name, 'found')
-  })
-  NearbyChat.addListener('peerLost', ({ peerId }) => {
-    // 연결된 사람은 근처 목록에서 잠깐 사라져도 대화는 이어진다.
-    if (peerOf(peerId)?.status !== 'connected') set({ peers: state.peers.filter((p) => p.id !== peerId) })
-  })
-  NearbyChat.addListener('invitation', ({ peerId, name }) => upsertPeer(peerId, name, 'incoming'))
-  NearbyChat.addListener('peerState', ({ peerId, name, state: s }) => {
-    const was = peerOf(peerId)?.status
-    if (s === 'connected') {
-      upsertPeer(peerId, name, 'connected')
-      addMessage({ from: 'system', name, text: `${name} 님과 연결됐어요.` })
-    } else if (s === 'connecting') {
-      upsertPeer(peerId, name, 'connecting')
-    } else {
-      upsertPeer(peerId, name, 'found')
-      if (was === 'connected') addMessage({ from: 'system', name, text: `${name} 님과 연결이 끊겼어요.` })
-    }
-  })
-  NearbyChat.addListener('message', ({ name, text, ko }) => addMessage({ from: 'them', name, text, ko }))
+  listening ??= Promise.all([
+    NearbyChat.addListener('peerFound', ({ peerId, name }) => {
+      if (!peerOf(peerId)) upsertPeer(peerId, name, 'found')
+    }),
+    NearbyChat.addListener('peerLost', ({ peerId }) => {
+      // 연결된 사람은 근처 목록에서 잠깐 사라져도 대화는 이어진다.
+      if (peerOf(peerId)?.status !== 'connected') set({ peers: state.peers.filter((p) => p.id !== peerId) })
+    }),
+    NearbyChat.addListener('invitation', ({ peerId, name }) => upsertPeer(peerId, name, 'incoming')),
+    NearbyChat.addListener('peerState', ({ peerId, name, state: s }) => {
+      const was = peerOf(peerId)?.status
+      if (s === 'connected') {
+        upsertPeer(peerId, name, 'connected')
+        addMessage({ from: 'system', name, text: `${name} 님과 연결됐어요.` })
+      } else if (s === 'connecting') {
+        upsertPeer(peerId, name, 'connecting')
+      } else {
+        upsertPeer(peerId, name, 'found')
+        if (was === 'connected') addMessage({ from: 'system', name, text: `${name} 님과 연결이 끊겼어요.` })
+      }
+    }),
+    NearbyChat.addListener('message', ({ name, text, ko }) => addMessage({ from: 'them', name, text, ko })),
+  ])
+  return listening
 }
 
 export async function startNearby(name: string) {
-  listen()
+  await listen()
+  // 시작하자마자 찾은 사람이 지워지지 않도록 목록을 먼저 비운다.
+  set({ peers: [] })
   await NearbyChat.start({ name })
-  set({ running: true, peers: [] })
+  set({ running: true })
 }
 
 export async function stopNearby() {

@@ -83,8 +83,9 @@ public class ViSpeechPlugin: CAPPlugin, CAPBridgedPlugin {
     /// 녹음을 멈추고 최종 인식 결과 { text, error? }를 돌려준다.
     @objc func stop(_ call: CAPPluginCall) {
         DispatchQueue.main.async {
-            guard self.request != nil else { return call.resolve(["text": self.latest]) }
-            self.stopCall?.resolve(["text": self.latest])
+            // 인식이 먼저 끝났으면(오래 말이 없거나 오류) 그때까지 들린 말과 이유를 돌려준다.
+            guard self.request != nil else { return call.resolve(self.result()) }
+            self.stopCall?.resolve(self.result())
             self.stopCall = call
             self.stopEngine()
             self.request?.endAudio()
@@ -97,13 +98,15 @@ public class ViSpeechPlugin: CAPPlugin, CAPBridgedPlugin {
     }
 
     private func finish() {
-        if let call = stopCall {
-            var data: [String: Any] = ["text": latest]
-            if latest.isEmpty, let error = lastError { data["error"] = error }
-            call.resolve(data)
-            stopCall = nil
-        }
+        stopCall?.resolve(result())
+        stopCall = nil
         cleanup()
+    }
+
+    private func result() -> [String: Any] {
+        var data: [String: Any] = ["text": latest]
+        if latest.isEmpty, let error = lastError { data["error"] = error }
+        return data
     }
 
     private func stopEngine() {
